@@ -17,8 +17,10 @@ import ContentPaste from '@mui/icons-material/ContentPaste'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
+import { mapOrder } from '~/utils/sorts'
 
-function Column() {
+
+function Column({ column }) {
   const [anchorEl, setAnchorEl] = useState(null) // mặc định anchorEl có giá trị null
   const open = Boolean(anchorEl) // nếu anchorEl có giá trị thì open là true
   const handleClick = (event) => { // Thực thi hàm này khi click
@@ -27,6 +29,7 @@ function Column() {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   return (
     <Box sx={{
       maxWidth: '300px', // không để co lại theo layout
@@ -52,7 +55,7 @@ function Column() {
           fontWeight: 'bold',
           cursor: 'pointer'
         }}>
-          Column Title
+          {column?.title}
         </Typography>
         <Box>
           <Tooltip title="More options">
@@ -106,7 +109,7 @@ function Column() {
       </Box>
 
       {/* List cards */}
-      <ListCards />
+      <ListCards cards={orderedCards} />
 
       {/* fOOTER */}
       <Box sx={{
