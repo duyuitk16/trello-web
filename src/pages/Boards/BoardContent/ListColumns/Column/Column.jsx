@@ -19,27 +19,47 @@ import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
 import { mapOrder } from '~/utils/sorts'
 
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
 
 function Column({ column }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: column._id,
+    data: { ...column }
+  })
+  const dndKitColumnStyles = {
+    // Dành cho sensor default dạng PointerSensor
+    // touchAction: 'none',
+
+    transform: CSS.Translate.toString(transform), // Nếu sử dụng Css.Transform thì bị lỗi stretch
+    transition
+  }
+
   const [anchorEl, setAnchorEl] = useState(null) // mặc định anchorEl có giá trị null
   const open = Boolean(anchorEl) // nếu anchorEl có giá trị thì open là true
   const handleClick = (event) => { // Thực thi hàm này khi click
     setAnchorEl(event.currentTarget) // set giá trị cho anchorEl
   }
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
+  const handleClose = () => { setAnchorEl(null) }
+
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
   return (
-    <Box sx={{
-      maxWidth: '300px', // không để co lại theo layout
-      minWidth: '300px',
-      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
-      ml: 2,
-      borderRadius: '6px',
-      height: 'fit-content',
-      maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
-    }}>
+    <Box
+      ref={setNodeRef}
+      style={dndKitColumnStyles}
+      {...attributes}
+      {...listeners}
+      sx={{
+        maxWidth: '300px', // không để co lại theo layout
+        minWidth: '300px',
+        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
+        ml: 2,
+        borderRadius: '6px',
+        height: 'fit-content',
+        maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
+      }}>
 
       {/* HEADER */}
       <Box sx={{
