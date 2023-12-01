@@ -22,7 +22,8 @@ function Card({ card }) {
 
     transform: CSS.Translate.toString(transform), // Nếu sử dụng Css.Transform thì bị lỗi stretch
     transition,
-    opacity: isDragging ? 0.5 : undefined
+    opacity: isDragging ? 0.5 : undefined,
+    border: isDragging ? ' 1px solid #2ecc71' : undefined
   }
 
   const shouldShowCardAction = () => {
@@ -38,7 +39,7 @@ function Card({ card }) {
       }}
     >
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
-      <CardContent sx={{ p: 1.5 }}>
+      <CardContent sx={{ '&:last-child': { p: 1.5 } }}>
         <Typography>{card?.title}</Typography>
       </CardContent>
       {shouldShowCardAction() &&

@@ -12,7 +12,6 @@ function ListCards({ cards }) {
         display: 'flex',
         flexDirection: 'column',
         gap: 1, // cách nhau giữa các card
-        '.MuiCardContent-root:last-child': { p: 1.5 },
         overflowX: 'hidden',
         overflowY: 'auto',
         maxHeight: (theme) => `calc(
