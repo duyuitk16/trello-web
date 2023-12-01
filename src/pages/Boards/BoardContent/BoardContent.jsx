@@ -13,6 +13,7 @@ import {
   useSensors
 } from '@dnd-kit/core'
 import { useEffect, useState } from 'react'
+import { cloneDeep } from 'lodash'
 import { arrayMove } from '@dnd-kit/sortable'
 
 import Column from './ListColumns/Column/Column'
@@ -46,6 +47,11 @@ function BoardContent({ board }) {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
   }, [board])
 
+  const findColumnByCardId = (cardId) => {
+    //Nên dùng c.cards thay vì c.cardOrderIds bởi vì ở handleDragOver ta sẽ làm dữ liệu cho cards hoàn chỉnh trước rồi mới tạo ra cardOrderIds mới
+    return orderedColumns.find(column => column?.cards?.map(card => card._id)?.includes(cardId))
+  }
+
   const handleDragStart = (event) => {
     // console.log('handleDragStart: ', event)
     setActiveDragItemId(event?.active?.id)
@@ -53,12 +59,70 @@ function BoardContent({ board }) {
     setActiveDragItemData(event?.active?.data?.current)
   }
 
-  const handleDragEnd = (event) => {
-    // console.log('handleDragEnd: ', event)
+  const handleDragOver = (event) => {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return
 
     const { active, over } = event
-    //Kiểm tra nếu không tồn tại over thì return (kéo linh tinh ra ngoài)
-    if (!over) return
+
+    //Đảm bảo nếu không tồn tại active hoặc over (kéo ra ngoài container) thì không làm gì
+    if (!active || !over) return
+
+    const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
+    const { id: overCardId } = over
+
+    const activeColumn = findColumnByCardId(activeDraggingCardId)
+    const overColumn = findColumnByCardId(overCardId)
+
+    if (!activeColumn || !overColumn) return
+
+    if (activeColumn._id !== overColumn._id) {
+      setOrderedColumns(prevColumns => {
+        // Tìm nơi activeCard sắp được thả trong overColumn
+        const overCardIndex = overColumn?.cards?.findIndex(c => c._id === overCardId)
+
+        // Tính CardIndex mới (trên hoặc dưới của overCard)
+        let newCardIndex
+        const isBelowOverItem = active.rect.current.translated &&
+          active.rect.current.translated.top > over.rect.top + over.rect.height
+        const modifier = isBelowOverItem ? 1 : 0
+        newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
+
+        // Clone mảng OrderdColumns cũ ra một cái mới để xử lý data rồi mới return --> cập nhật state mới
+        const nextColumns = cloneDeep(prevColumns)
+
+        const nextActiveColumn = nextColumns.find(c => c._id === activeColumn._id)
+        const nextOverColumn = nextColumns.find(c => c._id === overColumn._id)
+
+        if (nextActiveColumn) {
+          //Xóa card ở column active (column cũ)
+          nextActiveColumn.cards = nextActiveColumn.cards.filter(c => c._id !== activeDraggingCardId)
+          //Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
+          nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(c => c._id)
+        }
+        if (nextOverColumn) {
+          //Ktra card đang kéo có tồn tại ở overColumn chưa, nếu có thì cần xóa nó trước
+          nextOverColumn.cards = nextOverColumn.cards.filter(c => c._id !== activeDraggingCardId)
+          //Thêm card đang kéo vào overColumn theo vị trí index mới
+          nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, activeDraggingCardData)
+          //Cập nhật lại mảng cardOrderIds
+          nextOverColumn.cardOrderIds = nextOverColumn.cards.map(c => c._id)
+        }
+        return nextColumns
+      })
+    }
+  }
+
+  const handleDragEnd = (event) => {
+    // console.log('handleDragEnd: ', event)
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
+      // console.log('Hành động kéo card không làm gì hết!')
+      return
+    }
+
+    const { active, over } = event
+
+    //Đảm bảo nếu không tồn tại active hoặc over (kéo ra ngoài container) thì không làm gì
+    if (!active || !over) return
 
     if (active.id !== over.id) {
       //Lấy oldIndex từ active
@@ -90,6 +154,7 @@ function BoardContent({ board }) {
     <DndContext
       sensors={sensors}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
       {/* Bao quanh */}
