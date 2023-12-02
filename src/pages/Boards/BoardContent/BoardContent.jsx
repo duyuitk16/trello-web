@@ -10,7 +10,8 @@ import {
   TouchSensor,
   defaultDropAnimationSideEffects,
   useSensor,
-  useSensors
+  useSensors,
+  closestCorners
 } from '@dnd-kit/core'
 import { useEffect, useState } from 'react'
 import { cloneDeep } from 'lodash'
@@ -153,6 +154,8 @@ function BoardContent({ board }) {
   return (
     <DndContext
       sensors={sensors}
+      // Thuật toán phát hiện va chạm (nếu không có nó thì card với cover lớn sẽ không kéo qua Column được vì conflict giữa card và column) ta dùng closetCorners thay vì closestCenter
+      collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
