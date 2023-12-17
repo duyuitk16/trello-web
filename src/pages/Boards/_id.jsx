@@ -3,7 +3,7 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from '~/pages/Boards/BoardBar/BoardBar'
 import BoardContent from '~/pages/Boards/BoardContent/BoardContent'
 
-// import { mockData } from '~/apis/mock-data'
+import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
 import { fetchBoardDetailsAPI } from '~/apis'
 
@@ -20,8 +20,8 @@ function Board() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
-      <BoardBar board={board} />
-      <BoardContent board={board} />
+      <BoardBar board={mockData.board} />
+      <BoardContent board={mockData.board} />
     </Container>
   )
 }
