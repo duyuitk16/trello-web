@@ -9,18 +9,24 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter column name!')
       return
     }
 
-    //Gọi API
+    const newColumnData = {
+      title: newColumnTitle
+    }
 
+    /**
+     * Ở học phần nâng cao, ta sẽ đưa dl Board ra ngoài Redux Global Store
+     * Thì khi đó, ta sẽ gọi API ở đây là xong thay vì gọi props ngược lên component cha cao nhất (_id.jxs) */
+    await createNewColumn(newColumnData)
 
     // Xóa input và đóng form
     setNewColumnTitle('')
@@ -40,7 +46,7 @@ function ListColumns({ columns }) {
         overflowY: 'hidden',
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
-        {columns?.map(column => <Column key={column._id} column={column} />)}
+        {columns?.map(column => <Column key={column._id} column={column} createNewCard={createNewCard} />)}
 
         {/* Button Add New Column */}
         {

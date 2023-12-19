@@ -26,7 +26,7 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -53,7 +53,7 @@ function Column({ column }) {
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card name!', {
         position: 'bottom-right',
@@ -62,8 +62,15 @@ function Column({ column }) {
       return
     }
 
-    //Gọi API
+    const newColumnData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
 
+    /**
+     * Ở học phần nâng cao, ta sẽ đưa dl Board ra ngoài Redux Global Store
+     * Thì khi đó, ta sẽ gọi API ở đây là xong thay vì gọi props ngược lên component cha cao nhất (_id.jxs) */
+    await createNewCard(newColumnData)
 
     // Xóa input và đóng form
     setNewCardTitle('')
