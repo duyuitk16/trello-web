@@ -17,7 +17,6 @@ import ContentPaste from '@mui/icons-material/ContentPaste'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -48,12 +47,13 @@ function Column({ column, createNewCard }) {
   }
   const handleClose = () => { setAnchorEl(null) }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  // Đã sắp xếp trước ở component cha rồi (_id.jsx)
+  const orderedCards = column?.cards
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter card name!', {
         position: 'bottom-right',
@@ -70,7 +70,7 @@ function Column({ column, createNewCard }) {
     /**
      * Ở học phần nâng cao, ta sẽ đưa dl Board ra ngoài Redux Global Store
      * Thì khi đó, ta sẽ gọi API ở đây là xong thay vì gọi props ngược lên component cha cao nhất (_id.jxs) */
-    await createNewCard(newColumnData)
+    createNewCard(newColumnData)
 
     // Xóa input và đóng form
     setNewCardTitle('')
