@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { mapOrder } from '~/utils/sorts'
 import { generatePlaceholderCard } from '~/utils/formatters'
 
 import {
@@ -31,7 +30,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardsInTheSameColumn }) {
   //Nếu dùng phải kèm với thuộc tính CSS touchAction:'none' ở những phần tử kéo thả ==> nhưng còn bug :)
   // const pointSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -55,7 +54,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   // const lastOverId = useRef(null)
 
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    // Đã sắp xếp trước ở component cha rồi (_id.jsx)
+    setOrderedColumns(board?.columns)
   }, [board])
 
   const findColumnByCardId = (cardId) => {
@@ -204,6 +204,7 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         const newCardIndex = overColumn?.cards?.findIndex(c => c._id === overCardId)
 
         const dndOrderedCards = arrayMove(oldColumn?.cards, oldCardIndex, newCardIndex)
+        const dndOrderedCardIds = dndOrderedCards.map(c => c._id)
 
         setOrderedColumns(prevColumns => {
           const nextColumns = cloneDeep(prevColumns)
@@ -211,10 +212,11 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
 
           //Cập nhật cards và cardOrderIds
           targetColumn.cards = dndOrderedCards
-          targetColumn.cardOrderIds = dndOrderedCards.map(c => c._id)
+          targetColumn.cardOrderIds = dndOrderedCardIds
 
           return nextColumns
         })
+        moveCardsInTheSameColumn(dndOrderedCards, dndOrderedCardIds, oldColumn._id)
       }
     }
 
@@ -228,14 +230,14 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         // Dùng arrayMove để sắp xếp lại mảng Columns ban đầu và cập nhật lại
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
+        // Vẫn set state ở đây để tránh flickering giao diện do phải chờ API response (small trick, mượt UI/UX)
+        setOrderedColumns(dndOrderedColumns)
+
         /**
           * Ở học phần nâng cao, ta sẽ đưa dl Board ra ngoài Redux Global Store
           * Thì khi đó, ta sẽ gọi API ở đây là xong thay vì gọi props ngược lên component cha cao nhất (_id.jxs)
          */
         moveColumns(dndOrderedColumns)
-
-        // Vẫn set state ở đây để tránh flickering giao diện do phải chờ API response (lí do không cần await hàm ở trên, small trick, mượt UI/UX)
-        setOrderedColumns(dndOrderedColumns)
       }
     }
 

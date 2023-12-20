@@ -13,7 +13,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('Please enter column name!')
       return
@@ -26,7 +26,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
     /**
      * Ở học phần nâng cao, ta sẽ đưa dl Board ra ngoài Redux Global Store
      * Thì khi đó, ta sẽ gọi API ở đây là xong thay vì gọi props ngược lên component cha cao nhất (_id.jxs) */
-    await createNewColumn(newColumnData)
+    createNewColumn(newColumnData)
 
     // Xóa input và đóng form
     setNewColumnTitle('')
