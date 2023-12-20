@@ -31,7 +31,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   //Nếu dùng phải kèm với thuộc tính CSS touchAction:'none' ở những phần tử kéo thả ==> nhưng còn bug :)
   // const pointSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -228,10 +228,13 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         // Dùng arrayMove để sắp xếp lại mảng Columns ban đầu và cập nhật lại
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
-        //Cập nhật giá trị vào DB (xử lý gọi API)
-        // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-        // console.log('dndOrderedColumns: ', dndOrderedColumns)
-        // console.log('dndOrderedColumnsIds: ', dndOrderedColumnsIds)
+        /**
+          * Ở học phần nâng cao, ta sẽ đưa dl Board ra ngoài Redux Global Store
+          * Thì khi đó, ta sẽ gọi API ở đây là xong thay vì gọi props ngược lên component cha cao nhất (_id.jxs)
+         */
+        moveColumns(dndOrderedColumns)
+
+        // Vẫn set state ở đây để tránh flickering giao diện do phải chờ API response (lí do không cần await hàm ở trên, small trick, mượt UI/UX)
         setOrderedColumns(dndOrderedColumns)
       }
     }
