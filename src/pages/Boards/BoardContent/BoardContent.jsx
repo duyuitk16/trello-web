@@ -30,7 +30,13 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardsInTheSameColumn }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard, moveColumns,
+  moveCardsInTheSameColumn,
+  moveCardToDifferentColumn
+}) {
   //Nếu dùng phải kèm với thuộc tính CSS touchAction:'none' ở những phần tử kéo thả ==> nhưng còn bug :)
   // const pointSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -71,7 +77,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns(prevColumns => {
       // Tìm nơi activeCard sắp được thả trong overColumn
@@ -123,6 +130,18 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
 
         // console.log('nextColumns: ', nextColumns)
       }
+
+      // Nếu được gọi từ handleDragEnd nghĩa là kéo thả xong, lúc này mới gọi API 1 lần
+      // Phải dùng activeDragItemData.columnId hoặc tốt nhất là oldColumn._id (set state từ bước handleDragStart) chứ không dùng activeData trong scope handleDragEnd vì trước đó nó đi qua handleDragOver và state đã bị cập nhật 1 lần rồi
+      if (triggerFrom === 'handleDragEnd') {
+        moveCardToDifferentColumn(
+          activeDraggingCardId,
+          oldColumn._id,
+          nextOverColumn._id,
+          nextColumns
+        )
+      }
+
       return nextColumns
     })
   }
@@ -162,7 +181,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       )
     }
   }
@@ -193,7 +213,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
         //Kéo thả card trong cùng column
