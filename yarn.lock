@@ -1975,6 +1975,11 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+material-ui-confirm@3.0.9:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/material-ui-confirm/-/material-ui-confirm-3.0.9.tgz#706198ec9f08ddd0fa9afa4cb27b2f1e1cf60412"
+  integrity sha512-WEAEG9z4MfwojoUyQiAjrjl8378tYbGKfiwOKz3zHaQKyXcHnFktUmV7b+F+G0yVo8kYrEMk9Bw+HxhA/2Enlw==
+
 mime-db@1.52.0:
   version "1.52.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
