@@ -1,49 +1,25 @@
-### Bộ code base để bắt đầu học khóa MERN Stack Pro (HỌC PHẦN FRONT-END: REACTJS - MATERIAL UI - REDUX...vv) - Lập Trình qua dự án thực tế Trello Clone trên YouTube của mình nhé các bạn!
-### Base project for my MERN Stack Pro Course - Build Trello App on YouTube!
+### Đây là Source code front-end của trello web.
+### Mình sử dụng ReactJS, MaterialUI để styling và thư viện DndKit cho việc kéo thả!
 
-- Link Download Full Source Code hoàn chỉnh của bộ này và ủng hộ mình: (Sắp có...)
+### Demo:
 
-- Link YouTube Playlist: https://www.youtube.com/playlist?list=PLP6tw4Zpj-RJP2-YrhtkWqObMQ-AA4TDy
+![image](https://github.com/duyuitk16/trello-web/assets/100192240/5852b4ad-0b3a-4347-a168-d310a7dd9a92)
 
-### Hướng dẫn clone Repo code này về máy các bạn chuẩn nhất ở đây nhé:
+![image](https://github.com/duyuitk16/trello-web/assets/100192240/37cc30a6-1873-4e22-b4e9-94b90e0b0df6)
 
-- Link: https://youtu.be/lUfsTj45Uys
+### Chức năng:
 
-### Requirements - Thông tin của bộ Code Base này - Chuẩn các phiên bản dưới đây để bắt đầu học: (Semantic Versioning)
-
-```
-* nodejs = v18.16.0
-* npm = v9.5.1
-* yarn = v1.22.19
-
-* "react": "^18.2.0"
-* "react-dom": "^18.2.0"
-* "@types/react": "^18.0.28"
-* "@types/react-dom": "^18.0.11"
-
-* "vite": "^4.3.2"
-* "@vitejs/plugin-react-swc": "^3.0.0"
-
-* "eslint": "^8.38.0"
-* "eslint-plugin-react": "^7.32.2"
-* "eslint-plugin-react-hooks": "^4.6.0"
-* "eslint-plugin-react-refresh": "^0.3.4"
-```
+- Kéo thả column trong board.
+- Kéo thả card trong column.
+- Tạo thêm column, card mới.
+- Dark/Light/System scheme.
 
 ### About Me - Thông tin về mình:
 
-Author: **Trungquandev - Một Lập Trình Viên** & **CodeTQ**
+Author: **duyuitk16 - Nguyễn Vũ Anh Duy**
 
-Blog: https://trungquandev.com/
+Idea and based: **Trungquandev - Một Lập Trình Viên** & **CodeTQ**
 
-CV: https://cv.trungquandev.com/
-
-YouTube 01 (Trungquandev - Một Lập Trình Viên): https://www.youtube.com/@trungquandev
-
-YouTube 02 (CodeTQ): https://www.youtube.com/@code-tq
-
-"Learning new everyday not the copycat of yesterday!"
-
-"A bit of fragrance clings to the hand that gives flowers!"
+Facebook: https://www.facebook.com/nguyenvuanhduy173/
 
 Thanks for watching!
